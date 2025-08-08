@@ -1,6 +1,9 @@
 # env & secrets
 .env
 *.env
+.env.*
+**/.env
+**/.env.*
 infrastructure/config/*.env
 
 # node
