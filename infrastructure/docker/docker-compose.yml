@@ -1,0 +1,58 @@
+
+services:
+  proxy:
+    image: caddy:2
+    container_name: adorra-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - frontend
+      - backend
+      - n8n
+    networks:
+      - adorra_net
+
+  frontend:
+    build:
+      context: ../../frontend
+    container_name: adorra-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - adorra_net
+
+  backend:
+    build:
+      context: ../../backend
+    container_name: adorra-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - adorra_net
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: adorra-n8n
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_PATH=/n8n
+      - GENERIC_TIMEZONE=Europe/Bucharest
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - adorra_net
+
+volumes:
+  n8n_data:
+
+networks:
+  adorra_net:
+    driver: bridge

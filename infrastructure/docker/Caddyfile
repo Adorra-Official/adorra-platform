@@ -1,0 +1,26 @@
+:80 {
+  encode zstd gzip
+
+  log {
+    output stdout
+    format console
+  }
+
+  route {
+    # API -> backend (taie /api din path)
+    handle_path /api/* {
+      uri strip_prefix /api
+      reverse_proxy backend:5000
+    }
+
+    # n8n subpath
+    handle_path /n8n* {
+      reverse_proxy n8n:5678
+    }
+
+    # restul -> frontend
+    handle {
+      reverse_proxy frontend:3000
+    }
+  }
+}
