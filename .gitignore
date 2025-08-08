@@ -1,0 +1,12 @@
+# env & secrets
+.env
+*.env
+infrastructure/config/*.env
+
+# node
+node_modules/
+.next/
+dist/
+
+# docker
+*.log
