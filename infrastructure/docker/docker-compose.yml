@@ -1,4 +1,4 @@
-
+cat > docker-compose.yml <<'EOF'
 services:
   proxy:
     image: caddy:2
@@ -22,6 +22,11 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
     networks:
       - adorra_net
 
@@ -32,6 +37,11 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
     networks:
       - adorra_net
 
@@ -40,11 +50,15 @@ services:
     container_name: adorra-n8n
     restart: unless-stopped
     environment:
-      - N8N_HOST=localhost
+      - N8N_HOST=77.237.234.112
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - N8N_PATH=/n8n
+      - N8N_EDITOR_BASE_URL=http://77.237.234.112/n8n
+      - WEBHOOK_URL=http://77.237.234.112/n8n/
       - GENERIC_TIMEZONE=Europe/Bucharest
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_RUNNERS_ENABLED=true
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
@@ -56,3 +70,4 @@ volumes:
 networks:
   adorra_net:
     driver: bridge
+EOF
