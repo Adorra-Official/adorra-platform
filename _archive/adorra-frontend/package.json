@@ -1,0 +1,7 @@
+{
+  "name": "adorra-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "echo '✅ Frontend Adorra pornește (simulat)' && sleep 3600"
+  }
+}

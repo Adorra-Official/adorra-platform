@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: adorra-backend
+    build:
+      context: ../../adorra-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../../adorra-backend:/app
+    env_file:
+      - ../../.env
+    restart: unless-stopped
+
+  frontend:
+    container_name: adorra-frontend
+    build:
+      context: ../../adorra-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../adorra-frontend:/app
+    env_file:
+      - ../../.env
+    restart: unless-stopped
+
+  n8n:
+    container_name: adorra-n8n
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=77.237.234.112
+      - N8N_PORT=5678
+      - WEBHOOK_TUNNEL_URL=http://77.237.234.112:5678
+      - N8N_PROTOCOL=http
+      - N8N_SECURE_COOKIE=false
+
+volumes:
+  n8n_data:
